@@ -648,7 +648,7 @@ def update_booking(row, col, customer_id, filename):
 #create_user()
 #edit_user()
 #quick_create_user()
-search_user()
+#search_user()
 #delete_user()
 #create_staff()
 #main_menu()
