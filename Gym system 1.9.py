@@ -644,7 +644,7 @@ def update_booking(row, col, customer_id, filename):
         messagebox.showerror("Error", f"Failed to update booking: {e}")
 
 
-#login()
+login()
 #create_user()
 #edit_user()
 #quick_create_user()
