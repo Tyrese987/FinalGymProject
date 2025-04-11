@@ -5,7 +5,11 @@ import re
 import random
 import os
 import datetime
-from datetime
+
+
+
+# Classes will be defined here for the system Currently Staff and Customer 
+from datetime import datetime
 
 class Customer:
     def __init__(self, userid, fname, sname, phone, email, dob, health_issues):
