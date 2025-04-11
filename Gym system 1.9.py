@@ -4,10 +4,13 @@ import pickle
 import re
 import random
 import os
+import datetime
 
 
 
 # Classes will be defined here for the system Currently Staff and Customer 
+from datetime import datetime
+
 class Customer:
     def __init__(self, userid, fname, sname, phone, email, dob, health_issues):
         self.userid = userid
@@ -17,6 +20,24 @@ class Customer:
         self.email = email
         self.dob = dob
         self.health_issues = health_issues
+
+    def get_age_group(self):
+        # Parse the DOB string into a datetime object
+        dob_date = datetime.strptime(self.dob, "%d/%m/%Y")
+        today = datetime.today()
+        
+        # Calculate the age
+        age = today.year - dob_date.year - ((today.month, today.day) < (dob_date.month, dob_date.day))
+        
+        # Determine the age group
+        if 14 <= age <= 16:
+            return "Junior"
+        elif 17 <= age <= 50:
+            return "Normal"
+        elif 51 <= age <= 90:
+            return "Unc"
+        else:
+            return "Unknown"
 
 class Staff:
     def __init__(self, userid, username, password, fname, sname, phone, email, dob):
@@ -230,8 +251,6 @@ def save_user(root, entryf, entrys, entryp, entrye, entrydob, entryHI):
 
     validate = True
 
-    print(f"Validating: fname={fname}, sname={sname}, phone={phone}, email={email}, dob={dob}")
-
     # Validate first name
     if not fname.isalpha():
         validate = False
@@ -261,6 +280,10 @@ def save_user(root, entryf, entrys, entryp, entrye, entrydob, entryHI):
         username = fname[0] + sname + phone[:2]
         id = username
         temp = Customer(id, fname, sname, phone, email, dob, HI)
+        
+        # Get the age group
+        age_group = temp.get_age_group()
+        
         try:
             with open('User_Gym.pkl', 'rb') as file:
                 customers = pickle.load(file)
@@ -272,7 +295,8 @@ def save_user(root, entryf, entrys, entryp, entrye, entrydob, entryHI):
             customers.append(temp)
             with open('User_Gym.pkl', 'wb') as file:
                 pickle.dump(customers, file)
-        messagebox.showinfo("Success", "User has been created successfully")
+        
+        messagebox.showinfo("Success", f"User has been created successfully. Age Group: {age_group}")
         messagebox.showinfo("welcome", username)
     else:
         return
@@ -288,18 +312,20 @@ def load_customers(): #function to load the customer from the files
 
 def search_user():
     def perform_search():
-        userid = entryu.get()  #
+        userid = entryu.get()  
         customers = load_customers()
         for customer in customers:
             if customer.userid == userid:
                 # Display customer data
+                age_group = customer.get_age_group()
                 messagebox.showinfo("Success", 
                     f"User Found:\n"
                     f"Name: {customer.fname} {customer.sname}\n"
                     f"Phone: {customer.phone}\n"
                     f"Email: {customer.email}\n"
                     f"DOB @ {customer.dob}\n"
-                    f"Health Issues:{customer.health_issues}"
+                    f"Health Issues:{customer.health_issues}\n"
+                    f"Age Group: {age_group}"
                 )
                 return
         messagebox.showerror("Error", "User not found.")
@@ -644,15 +670,13 @@ def update_booking(row, col, customer_id, filename):
         messagebox.showerror("Error", f"Failed to update booking: {e}")
 
 
-login()
+#login()
 #create_user()
 #edit_user()
-#quick_create_user()
 #search_user()
 #delete_user()
 #create_staff()
 #main_menu()
 #create_booking()
-#booking_function()
 #booking_function()
 #create_booking()
